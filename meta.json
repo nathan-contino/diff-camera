@@ -21,7 +21,7 @@
     "setup": "./setup.sh",
     "path": "dist/archive.tar.gz",
     "arch": [
-      "any"
+      "linux/arm64"
     ]
   }
 }
