@@ -10,7 +10,7 @@ except ModuleNotFoundError:
 
 async def main():
     Registry.register_resource_creator(
-        Camera.SUBTYPE,
+        "rdk:component:camera",
         DiffCamera.MODEL,
         ResourceCreatorRegistration(DiffCamera.new_camera)
     )
