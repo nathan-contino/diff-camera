@@ -1,24 +1,22 @@
 import asyncio
 from viam.module.module import Module
 from viam.components.camera import Camera
-from viam.proto.common import ResourceName
+from viam.resource.registry import Registry, ResourceCreatorRegistration
 try:
     from models.diff_camera import DiffCamera
 except ModuleNotFoundError:
     # when running as local module with run.sh
     from .models.diff_camera import DiffCamera
 
-
 async def main():
-    module = Module()
-    # Register the model using the standard pattern
-    camera_resource = ResourceName(
-        namespace="rdk",
-        type="component",
-        subtype="camera",
-        name=""
+    Registry.register_resource_creator(
+        Camera.SUBTYPE,
+        DiffCamera.MODEL,
+        ResourceCreatorRegistration(DiffCamera.new_camera)
     )
-    module.add_model_from_registry(camera_resource, DiffCamera.MODEL)
+    
+    module = Module.from_args()
+
     await module.start()
 
 
