@@ -3,7 +3,7 @@ from typing import (Any, ClassVar, Dict, Final, List, Mapping, Optional,
                     Sequence, Tuple)
 
 from typing_extensions import Self
-from viam.components.camera import *
+from viam.components.camera import Camera
 from viam.media.video import NamedImage, ViamImage
 from viam.proto.app.robot import ComponentConfig
 from viam.proto.common import Geometry, ResourceName, ResponseMetadata
@@ -18,7 +18,7 @@ import io
 from viam.services.vision import Vision
 
 
-class DiffCamera(Camera, EasyResource):
+class DiffCamera(Camera):
     # To enable debug-level logging, either run viam-server with the --debug option,
     # or configure your resource/machine to display debug logs.
     MODEL: ClassVar[Model] = Model(ModelFamily("natch", "diff-camera"), "diff-camera")

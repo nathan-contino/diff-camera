@@ -10,7 +10,8 @@ except ModuleNotFoundError:
 
 async def main():
     module = Module()
-    module.add_model(Camera.SUBTYPE, DiffCamera.MODEL, DiffCamera)
+    # Register the model using the standard pattern
+    module.add_model_from_registry(Camera.SUBTYPE, DiffCamera.MODEL)
     await module.start()
 
 
