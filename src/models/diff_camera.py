@@ -23,6 +23,21 @@ class DiffCamera(Camera):
     # or configure your resource/machine to display debug logs.
     MODEL: ClassVar[Model] = Model(ModelFamily("natch", "diff-camera"), "diff-camera")
 
+    @classmethod
+    def new_camera(cls, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]) -> Self:
+        """Create a new instance of the DiffCamera.
+        
+        Args:
+            config (ComponentConfig): The configuration for this resource
+            dependencies (Mapping[ResourceName, ResourceBase]): The dependencies for this resource
+            
+        Returns:
+            Self: The new DiffCamera instance
+        """
+        camera = cls(config.name)
+        camera.reconfigure(config, dependencies)
+        return camera
+
     def __init__(self, name: str):
         super().__init__(name)
         self.image_memories: List[np.ndarray] = []
