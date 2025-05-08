@@ -14,12 +14,12 @@
   ],
   "applications": null,
   "markdown_link": "README.md",
-  "entrypoint": "reload.sh",
+  "entrypoint": "dist/main",
   "first_run": "",
   "build": {
     "build": "./build.sh",
     "setup": "./setup.sh",
-    "path": "module.tar.gz",
+    "path": "dist/archive.tar.gz",
     "arch": [
       "any"
     ]
