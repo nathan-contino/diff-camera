@@ -21,8 +21,7 @@
     "setup": "./setup.sh",
     "path": "dist/main",
     "arch": [
-      "linux/amd64",
-      "linux/arm64"
+      "any"
     ]
   }
 }
