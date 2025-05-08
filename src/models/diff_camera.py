@@ -22,7 +22,6 @@ class DiffCamera(Camera):
     # To enable debug-level logging, either run viam-server with the --debug option,
     # or configure your resource/machine to display debug logs.
     MODEL: ClassVar[Model] = Model(ModelFamily("natch", "diff-camera"), "diff-camera")
-    SUBTYPE: ClassVar[ResourceName] = Camera.SUBTYPE
 
     def __init__(self, name: str):
         super().__init__(name)
