@@ -1,4 +1,4 @@
 #!/bin/bash
 pip3 install -r requirements.txt
 python3 -m PyInstaller --onefile src/main.py
-tar -czvf dist/archive.tar.gz dist/main
+tar -czf module.tar.gz run.sh requirements.txt src meta.json build.sh setup.sh

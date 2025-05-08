@@ -14,7 +14,7 @@
   ],
   "applications": null,
   "markdown_link": "README.md",
-  "entrypoint": "dist/main",
+  "entrypoint": "module.tar.gz",
   "first_run": "",
   "build": {
     "build": "./build.sh",
