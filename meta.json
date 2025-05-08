@@ -8,20 +8,21 @@
     {
       "api": "rdk:component:camera",
       "model": "natch:diff-camera:diff-camera",
-      "short_description": "Provide a short (100 characters or less) description of this model here",
+      "short_description": "A camera component that returns images that differ from previous images",
       "markdown_link": "README.md#model-natchdiff-cameradiff-camera"
     }
   ],
   "applications": null,
   "markdown_link": "README.md",
-  "entrypoint": "dist/main",
-  "first_run": "",
+  "entrypoint": "reload.sh",
+  "first_run": "rm -f module.tar.gz && tar czf module.tar.gz requirements.txt src/*.py src/models/*.py meta.json setup.sh reload.sh",
   "build": {
-    "build": "./build.sh",
-    "setup": "./setup.sh",
-    "path": "dist/archive.tar.gz",
+   "build": "rm -f module.tar.gz && tar czf module.tar.gz requirements.txt src/*.py src/models/*.py meta.json setup.sh reload.sh",    "setup": "./setup.sh",
+    "path": "module.tar.gz",
     "arch": [
-      "any"
+      "linux/amd64",
+      "linux/arm64",
+      "darwin/amd64"
     ]
   }
 }

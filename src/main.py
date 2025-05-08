@@ -1,5 +1,6 @@
 import asyncio
 from viam.module.module import Module
+from viam.components.camera import Camera
 try:
     from models.diff_camera import DiffCamera
 except ModuleNotFoundError:
@@ -7,5 +8,11 @@ except ModuleNotFoundError:
     from .models.diff_camera import DiffCamera
 
 
+async def main():
+    module = Module()
+    module.add_model(Camera.SUBTYPE, DiffCamera.MODEL, DiffCamera)
+    await module.start()
+
+
 if __name__ == '__main__':
-    asyncio.run(Module.run_from_registry())
+    asyncio.run(main())
