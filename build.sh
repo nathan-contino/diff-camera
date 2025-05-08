@@ -1,4 +1,4 @@
 #!/bin/bash
 pip3 install -r requirements.txt
-pyinstaller --onefile src/main.py --distpath dist --name main
-tar -czf dist/archive.tar.gz dist/main meta.json
+python3 -m PyInstaller --onefile --hidden-import="googleapiclient" src/main.py
+tar -czvf dist/archive.tar.gz dist/main meta.json
