@@ -3,11 +3,10 @@ from typing import (Any, ClassVar, Dict, Final, List, Mapping, Optional,
                     Sequence, Tuple)
 
 from typing_extensions import Self
-from viam.components.camera import Camera
+from viam.services.vision import Vision
 from viam.media.video import NamedImage, ViamImage
 from viam.proto.app.robot import ComponentConfig
 from viam.proto.common import Geometry, ResourceName, ResponseMetadata
-from viam.proto.component.camera import GetPropertiesResponse, GetImageResponse
 from viam.resource.base import ResourceBase
 from viam.resource.easy_resource import EasyResource
 from viam.resource.types import Model, ModelFamily
@@ -15,28 +14,11 @@ from viam.utils import ValueTypes
 import numpy as np
 from PIL import Image
 import io
-from viam.services.vision import Vision
+from viam.components.camera import Camera
 
 
-class DiffCamera(Camera):
-    # To enable debug-level logging, either run viam-server with the --debug option,
-    # or configure your resource/machine to display debug logs.
+class DiffVision(Vision):
     MODEL: ClassVar[Model] = Model(ModelFamily("natch", "diff-camera"), "diff-camera")
-
-    @classmethod
-    def new_camera(cls, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]) -> Self:
-        """Create a new instance of the DiffCamera.
-        
-        Args:
-            config (ComponentConfig): The configuration for this resource
-            dependencies (Mapping[ResourceName, ResourceBase]): The dependencies for this resource
-            
-        Returns:
-            Self: The new DiffCamera instance
-        """
-        camera = cls(config.name)
-        camera.reconfigure(config, dependencies)
-        return camera
 
     def __init__(self, name: str):
         super().__init__(name)
@@ -45,24 +27,23 @@ class DiffCamera(Camera):
         self.input_camera: Optional[Camera] = None
 
     @classmethod
-    def new(
-        cls, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
-    ) -> Self:
-        """This method creates a new instance of this Camera component.
-        The default implementation sets the name from the `config` parameter and then calls `reconfigure`.
-
+    def new_vision(cls, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]) -> Self:
+        """Create a new instance of the DiffVision service.
+        
         Args:
             config (ComponentConfig): The configuration for this resource
-            dependencies (Mapping[ResourceName, ResourceBase]): The dependencies (both implicit and explicit)
-
+            dependencies (Mapping[ResourceName, ResourceBase]): The dependencies for this resource
+            
         Returns:
-            Self: The resource
+            Self: The new DiffVision instance
         """
-        return super().new(config, dependencies)
+        service = cls(config.name)
+        service.reconfigure(config, dependencies)
+        return service
 
     @classmethod
     def validate_config(cls, config: Dict[str, Any]) -> Dict[str, str]:
-        """Validate the configuration for the diff camera."""
+        """Validate the configuration for the diff vision service."""
 
         deps = []
 
@@ -114,22 +95,20 @@ class DiffCamera(Camera):
         self.image_memories = []  # Clear existing memories on reconfigure
         self.required_diff = config.attributes.fields["required_diff"].number_value if "required_diff" in config.attributes.fields else 0.2
 
-    async def get_image(self, mime_type: str = "") -> GetImageResponse:
-        """Get an image from the input camera if it differs enough from stored images."""
+    async def get_detections(self, image: ViamImage, extra: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Get detections from the image if it differs enough from stored images."""
         if not self.input_camera:
             raise RuntimeError("Input camera not set")
             
-        # Get image from input camera
-        response = await self.input_camera.get_image(mime_type)
-        img_data = response.image
-        img = Image.open(io.BytesIO(img_data))
+        # Convert ViamImage to numpy array
+        img = Image.open(io.BytesIO(image.data))
         img_array = np.array(img)
         
-        # If no memories, store and return the image
+        # If no memories, store and return empty detections
         if not self.image_memories:
             self.image_memories.append(img_array)
             self.logger.info("No previous images to compare against, storing first image")
-            return response
+            return []
             
         # Check if image differs enough from all stored images
         is_different = True
@@ -148,26 +127,20 @@ class DiffCamera(Camera):
                 self.logger.info("Removed oldest image from memory")
             self.image_memories.append(img_array)
             self.logger.info(f"Image different enough from all memories, storing (diff > {self.required_diff:.2%})")
-            return response
+            return [{"confidence": 1.0, "class_name": "significant_change"}]
             
-        # If not different enough, return None
-        self.logger.info("Image not different enough from memories, not returning")
-        return None
+        # If not different enough, return empty list
+        self.logger.info("Image not different enough from memories")
+        return []
 
-    async def get_images(self) -> List[GetImageResponse]:
-        """Get multiple images from the camera."""
-        img = await self.get_image()
-        return [img] if img else []
+    async def get_classifications(self, image: ViamImage, count: int = 1, extra: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Get classifications from the image if it differs enough from stored images."""
+        detections = await self.get_detections(image, extra)
+        return [{"class_name": d["class_name"], "confidence": d["confidence"]} for d in detections]
 
-    async def get_point_cloud(self) -> Tuple[bytes, str]:
-        """Get a point cloud from the camera."""
-        raise NotImplementedError("Point cloud not supported by diff camera")
-
-    async def get_properties(self) -> Camera.Properties:
-        """Get the camera properties."""
-        if not self.input_camera:
-            raise RuntimeError("Input camera not set")
-        return await self.input_camera.get_properties()
+    async def get_object_point_clouds(self, camera_name: str, extra: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Get object point clouds from the camera."""
+        raise NotImplementedError("Point clouds not supported by diff vision service")
 
     async def do_command(self, command: Dict[str, ValueTypes], *, timeout: Optional[float] = None) -> Dict[str, ValueTypes]:
         """Handle custom commands."""
