@@ -1,8 +1,8 @@
-# Module diff-camera 
+# Module sig-diff-vision 
 
 A vision service that detects when images differ significantly from previous images. It compares each new image against a set of remembered images and returns detections when significant changes are found.
 
-## Model natch:service:diff-camera
+## Model natch:service:sig-diff-vision
 
 A vision service that detects significant changes between images by comparing them against a set of remembered images.
 

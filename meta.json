@@ -1,15 +1,15 @@
 {
   "$schema": "https://dl.viam.dev/module.schema.json",
-  "module_id": "natch:diff-camera",
+  "module_id": "natch:sig-diff-vision",
   "visibility": "public",
-  "url": "https://github.com/nathan-contino/diff-camera",
+  "url": "https://github.com/nathan-contino/diff-camera/",
   "description": "Vision service that detects significant changes between images",
   "models": [
     {
       "api": "rdk:service:vision",
-      "model": "natch:service:diff-camera",
+      "model": "natch:service:sig-diff-vision",
       "short_description": "A vision service that detects when images differ significantly from previous images",
-      "markdown_link": "README.md#model-natchservicediff-camera"
+      "markdown_link": "README.md#model-natchservicesig-diff-vision"
     }
   ],
   "applications": null,

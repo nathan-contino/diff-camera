@@ -3,10 +3,10 @@ from viam.module.module import Module
 from viam.services.vision import Vision
 from viam.resource.registry import Registry, ResourceCreatorRegistration
 try:
-    from models.diff_camera import DiffVision
+    from models.sig_diff_vision import DiffVision
 except ModuleNotFoundError:
     # when running as local module with run.sh
-    from .models.diff_camera import DiffVision
+    from .models.sig_diff_vision import DiffVision
 
 
 async def main():
