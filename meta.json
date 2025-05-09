@@ -7,9 +7,9 @@
   "models": [
     {
       "api": "rdk:service:vision",
-      "model": "natch:service:sig-diff-vision",
+      "model": "natch:sig-diff-vision:sig-diff-vision",
       "short_description": "A vision service that detects when images differ significantly from previous images",
-      "markdown_link": "README.md#model-natchservicesig-diff-vision"
+      "markdown_link": "README.md#model-natchsig-diff-visionsig-diff-vision"
     }
   ],
   "applications": null,
