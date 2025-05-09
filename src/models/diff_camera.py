@@ -18,7 +18,7 @@ from viam.components.camera import Camera
 
 
 class DiffVision(Vision):
-    MODEL: ClassVar[Model] = Model(ModelFamily("natch", "diff-camera"), "diff-camera")
+    MODEL: ClassVar[Model] = Model(ModelFamily("natch", "service"), "diff-camera")
 
     def __init__(self, name: str):
         super().__init__(name)
